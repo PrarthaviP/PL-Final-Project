@@ -1,9 +1,11 @@
 module filterData
 
+using CSV
 using DataFrames
 
 function filterMenu(filename)
-    data = DataFrame(CSV.File(filename))
+    f = open(filename, "r")
+    data = CSV.read(f, DataFrame)
     menu = "\n1) Total cases\n" *
           "2) New Cases\n" *
            "3) Deaths\n" *
