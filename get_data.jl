@@ -8,6 +8,15 @@ include("DataStatistics.jl")
 
 out_file_name = "us_data.csv"
 url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv"
+
+function get_new_cases(csv)
+    new_cases = [0]
+    for i in 2:nrow(csv)
+        push!(new_cases, csv.cases[i-1] - csv.cases[i])
+    end
+    new_cases
+end
+
 function get_data_from_csv(url, out_file_name)
     f = open(out_file_name, "w")
     r = HTTP.request("GET", url)
@@ -16,11 +25,7 @@ function get_data_from_csv(url, out_file_name)
     f = open(out_file_name, "r")
     csv = CSV.read(f, DataFrame)
     sort!(csv, (:date), rev=true)
-    new_cases = [0]
-    for i in 2:nrow(csv)
-        push!(new_cases, csv.cases[i-1] - csv.cases[i])
-    end 
-    insertcols!(csv, 3, :new_cases => new_cases)
+    insertcols!(csv, 3, :new_cases => get_new_cases(csv))
     CSV.write(out_file_name, csv)
     close(f)
 end
