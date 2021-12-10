@@ -5,36 +5,33 @@ module analyseData
   using Statistics
   using Plots
 
-
-
-  df = DataFrame(CSV.File("us_data.csv"; select=["new_cases"]))
-
-  function predictFutureCases()
+  function predictFutureCases(fileName)
+    df = DataFrame(CSV.File(fileName; select=["new_cases"]))
     print("Enter how many days from today:> ")
     try
       days = parse(Int64,readline())
-      cases = analyseData.calculateCases(days)
+      cases = analyseData.calculateCases(df,days)
       println("Number of cases $days days later is :> $cases")
       print("Print plot(Y/N):> ")
       if(uppercase(readline()) == "Y")
-        analyseData.plotFutureCases(days)
+        analyseData.plotFutureCases(df,days)
       end
    catch
     println("Invalid Input")
    end
   end
 
-   function calculateCases(t::Integer)
-     growthRate = df[1,:"new_cases"] / df[2,:"new_cases"]
-     ans = (growthRate ^ t) * df[1,:"new_cases"]
+   function calculateCases(df, t::Integer)
+     growthRate = df[2,:"new_cases"] / df[3,:"new_cases"]
+     ans = (growthRate ^ t) * df[2,:"new_cases"]
      return ans
    end
 
-  function plotFutureCases(time::Integer)
+  function plotFutureCases(df,time::Integer)
     timeRange = 1:time
     cases = Vector{Float64}()
     for t in timeRange
-      push!(cases,calculateCases(t))
+      push!(cases,calculateCases(df, t))
     end
     plot(timeRange,cases)
   end
