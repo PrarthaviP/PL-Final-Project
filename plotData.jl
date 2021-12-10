@@ -71,4 +71,34 @@ function plotdata(ch, data)
          showerror(stdout, e)
     end
 end
+
+
+function plotMenu(data)
+
+    mainmenu = "\nPlots:\n" *
+          "1) Line\n" *
+          "2) Scatter\n" *
+          "3) Histogram\n" *
+           "0) Exit\n" *
+           "Enter option:> "
+
+    option = "-1"
+    while(option != "0")
+        print(mainmenu)
+        option = readline()
+        try
+            if(option == "1" || option == "2" || option == "3")
+                plotdata(option, data)
+            elseif(option == "0")
+                println("\nExiting")
+            else
+                println("Invalid option")
+            end
+        catch e
+             showerror(stdout, e)
+         end
+     end
+
+end
+
 end
