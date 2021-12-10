@@ -2,25 +2,13 @@ using CSV
 using DataFrames
 using Plots
 
-function svgtest(option, data)
+function svgtest(x, y)
     f = open("test.svg", "w")
-
-    x = data.date
-    # y() = y(Float64[], [])
-    y = data.cases
-    # if(option == "1")
-    #     y = data.cases
-    # elseif(option == "2")
-    #     y = data.new_cases
-    # elseif(option == "3")
-    #     y = data.deaths
-    # end
-
-    for i in 2:nrow(data)
-        outstr = "<line x1=\""+x[i-1]+"\" y1=\""+y[i-1]+"\" x2=\""+x[i]+""\" y2=\""+y[i]+"\" stroke=\"blue\" stroke-width=\"4\" />"
+    for i in 2:length(y)
+        outstr = "<line x1=\""*string(x[i-1])*"\" y1=\""*string(y[i-1])*"\" x2=\""*string(x[i])*""\" y2=\""*string(y[i])*"\" stroke=\"blue\" stroke-width=\"4\" />"
         write(f, outstr)
     end
-
+    
     close(f)
 end
 
@@ -33,8 +21,8 @@ function plotdata(ch, data)
     print("\nChoose data to plot:")
     print(menu)
     option = readline()
-    x() = data.date
-    y() = y(Float64[], [])
+    x = data.date
+    y = []
 
     try
         if(option == "1")
@@ -53,7 +41,7 @@ function plotdata(ch, data)
     try
         if(ch == "1")
             #display(plot(x, y))
-            svgtest(option, data)
+            svgtest(x, y)
         elseif(ch == "2")
             display(scatter(x, y))
         elseif(ch == "3")
@@ -67,8 +55,8 @@ function plotdata(ch, data)
 end
 
 function menu()
-
-    data = DataFrame(CSV.File("us_data.csv"))
+    f = open("us_data.csv", "r")
+    data = CSV.read(f, DataFrame)
 
     menu = "\n1) Line\n" *
           "2) Scatter\n" *
@@ -95,3 +83,5 @@ function menu()
          end
      end
 end
+
+menu()
