@@ -3,59 +3,61 @@ module DataStatistics
   using CSV
   using DataFrames
   using Statistics
-  using Plots
 
-  df = DataFrame(CSV.File("us_data.csv"; select=["cases"]))
+  function getData()
+    fileMenu = "Choose file to analyse \n" *
+               "1) Default\n" *
+               "2) Custom file\n" *
+               "Enter option:> "
+    colMenu = "Choose column to analyse \n" *
+              "1) New cases\n" *
+              "2) Total cases\n" *
+              "3) Deaths\n" *
+              "4) Custom column\n" *
+              "Enter option:> "
 
-  usaPopulation = 329500000
+    fileName = "us_data.csv"
+    colName = "new_cases"
+    print(fileMenu)
+    if(readline() == "2")
+      print("Enter exact file name:> ")
+      fileName = readline()
+    end
+    print(colMenu)
+    option = readline()
+      if(option == "2")
+        colName = "cases"
+      elseif(option == "3")
+        colName = "deaths"
+      elseif(option == "4")
+        print("Enter exact column name:> ")
+        colName = readline()
+      end
+      try
+        df = df = DataFrame(CSV.File(fileName; select=[colName]))
+        return calculateStatistics(df,colName)
+      catch
+       return print("Invalid file or column name:")
+      end
 
-  function calculateStatistics()
+  end
 
+  function calculateStatistics(df,colName)
+
+    println("")
       description = describe(df)
 
      mean = description[1, :"mean"]
      max = description[1, :"max"]
-     dev = stdm(df[!,"New Cases"], mean)
+     dev = stdm(df[!,colName], mean)
+     median = Statistics.median(df[!,colName])
      ans = "The average number of cases is:> $mean\n" *
            "The max number of cases in a day:> $max\n" *
-           "The standard deviation of the number of cases is: $dev\n"
-    return ans
-  end
-
- function predictFutureCases()
-   print("Enter how many days from today:> ")
-   try
-     days = parse(Int64,readline())
-     cases = analyseData.calculateCases(days)
-     println("Number of cases $days days later is :> $cases")
-     print("Print plot(Y/N):> ")
-     if(uppercase(readline()) == "Y")
-       plotFutureCases(days)
-     end
-  catch
-   println("Invalid Input")
-  end
- end
-
-  function calculateCases(t::Integer)
-    rows = nrow(df)
-    currentCases = df[rows, :"cases"]
-    c = currentCases - ((log2(currentCases) - log2(mod(usaPopulation - currentCases) )) / ( -1 * usaPopulation))
-
-    pwr = (t - c) * usaPopulation
-    ans = 1 * usaPopulation * (e ^ pwr) / ( 1 - (e ^ pwr))
+           "The standard deviation of the number of cases is: $dev\n" *
+           "The median of the data is $median\n"
     return ans
   end
 
 
-
- function plotFutureCases(time::Integer)
-   timeRange = 1:time
-   cases = Vector{Float64}()
-   for t in timeRange
-     push!(cases,calculateCases(t))
-   end
-   plot(timeRange,cases)
- end
 
 end
