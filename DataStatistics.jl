@@ -4,7 +4,7 @@ module DataStatistics
   using DataFrames
   using Statistics
 
-  function getData()
+  function getData(fileName)
     fileMenu = "Choose file to analyse \n" *
                "1) Default\n" *
                "2) Custom file\n" *
@@ -16,7 +16,7 @@ module DataStatistics
               "4) Custom column\n" *
               "Enter option:> "
 
-    fileName = "us_data.csv"
+    # fileName = "us_data.csv"
     colName = "new_cases"
     print(fileMenu)
     if(readline() == "2")

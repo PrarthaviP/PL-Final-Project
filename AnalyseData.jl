@@ -33,6 +33,6 @@ module analyseData
     for t in timeRange
       push!(cases,calculateCases(df, t))
     end
-    plot(timeRange,cases)
+    display(plot(timeRange,cases))
   end
 end
