@@ -1,5 +1,6 @@
+module get_data
+
 using HTTP
-using JSON3
 using CSV
 using DataFrames
 using Statistics
@@ -9,7 +10,7 @@ include("DataStatistics.jl")
 out_file_name = "us_data.csv"
 url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv"
 
-function get_new_cases(csv)
+function getNewCases(csv)
     new_cases = [0]
     for i in 2:nrow(csv)
         push!(new_cases, csv.cases[i-1] - csv.cases[i])
@@ -17,7 +18,7 @@ function get_new_cases(csv)
     new_cases
 end
 
-function get_data_from_csv(url, out_file_name)
+function getDataFromCsv(url, out_file_name)
     f = open(out_file_name, "w")
     r = HTTP.request("GET", url)
     write(f, r.body)
@@ -25,12 +26,12 @@ function get_data_from_csv(url, out_file_name)
     f = open(out_file_name, "r")
     csv = CSV.read(f, DataFrame)
     sort!(csv, (:date), rev=true)
-    insertcols!(csv, 3, :new_cases => get_new_cases(csv))
+    insertcols!(csv, 3, :new_cases => getNewCases(csv))
     CSV.write(out_file_name, csv)
     close(f)
 end
 
-function bulk_transform(filename)
+function bulkTransform(filename)
     f = open(filename, "r")
     csv = CSV.read(f, DataFrame)
     initial_num_cols = ncol(csv)
@@ -48,4 +49,4 @@ function bulk_transform(filename)
     CSV.write(filename, csv)
     close(f)
 end
-get_data_from_csv(url, out_file_name)
+end

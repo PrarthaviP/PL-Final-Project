@@ -3,6 +3,7 @@ include("DataStatistics.jl")
 include("filterData.jl")
 include("plotData.jl")
 include("get_data.jl")
+  using Plots
 
 function main()
      menu = "\n1) Import data from website to CSV file\n" *
