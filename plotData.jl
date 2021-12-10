@@ -32,7 +32,8 @@ function svgScatter(x, y, data)
 end
 
 function plotdata(ch, filename)
-    data = DataFrame(CSV.File(filename))
+    f = open(filename, "r")
+    data = CSV.read(f, DataFrame)
     menu = "\n1) Total Cases\n" *
            "2) New Cases\n" *
            "3) Deaths\n" *
@@ -71,8 +72,8 @@ function plotdata(ch, filename)
     catch e
          showerror(stdout, e)
     end
+    close(f)
 end
-
 
 function plotMenu(filename)
 
@@ -89,7 +90,7 @@ function plotMenu(filename)
         option = readline()
         try
             if(option == "1" || option == "2" || option == "3")
-                plotdata(option, data)
+                plotdata(option, filename)
             elseif(option == "0")
                 println("\nExiting")
             else
@@ -99,7 +100,6 @@ function plotMenu(filename)
              showerror(stdout, e)
          end
      end
-
 end
 
 end
