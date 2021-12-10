@@ -31,7 +31,8 @@ function svgScatter(x, y, data)
     close(f)
 end
 
-function plotdata(ch, data)
+function plotdata(ch, filename)
+    data = DataFrame(CSV.File(filename))
     menu = "\n1) Total Cases\n" *
            "2) New Cases\n" *
            "3) Deaths\n" *
@@ -73,7 +74,7 @@ function plotdata(ch, data)
 end
 
 
-function plotMenu(data)
+function plotMenu(filename)
 
     mainmenu = "\nPlots:\n" *
           "1) Line\n" *

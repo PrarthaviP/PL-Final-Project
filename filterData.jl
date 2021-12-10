@@ -2,7 +2,8 @@ module filterData
 
 using DataFrames
 
-function filterMenu(data)
+function filterMenu(filename)
+    data = DataFrame(CSV.File(filename))
     menu = "\n1) Total cases\n" *
           "2) New Cases\n" *
            "3) Deaths\n" *
